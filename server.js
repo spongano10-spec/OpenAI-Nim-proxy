@@ -30,7 +30,7 @@ const MODEL_MAPPING = {
   'claude-3-sonnet': 'openai/gpt-oss-20b',
   'gemini-pro': 'qwen/qwen3-next-80b-a3b-thinking',
   'gemma': 'google/gemma-4-31b-it',
-  'gemma2': 'google/gemma-2-2b-it'
+  'gemma7': 'google/gemma-7b'
 };
 
 // Health check endpoint
