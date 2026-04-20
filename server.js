@@ -31,7 +31,9 @@ const MODEL_MAPPING = {
   'gemini-pro': 'qwen/qwen3-next-80b-a3b-thinking',
   'gemma': 'google/gemma-4-31b-it',
   'gemma7': 'google/gemma-7b',
-  'mistral': 'mistralai/mistral-small-4-119b-2603'
+  'mistral': 'mistralai/mistral-small-4-119b-2603',
+  'opus5.1': 'z-ai/glm-5.1',
+  'opus4.7': 'z-ai/glm4.7'
 };
 
 // Health check endpoint
