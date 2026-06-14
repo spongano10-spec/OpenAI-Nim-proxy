@@ -34,7 +34,8 @@ const MODEL_MAPPING = {
   'mistral': 'mistralai/mistral-small-4-119b-2603',
   'opus5.1': 'z-ai/glm-5.1',
   'opus4.7': 'z-ai/glm4.7',
-  'deepseek-v4': 'deepseek-ai/deepseek-v4-pro'
+  'deepseek-v4': 'deepseek-ai/deepseek-v4-pro',
+  'deep': 'nicoboss/DeepSeek-R1-Distill-Qwen-32B-Uncensored'
 };
 
 // Health check endpoint
