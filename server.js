@@ -35,7 +35,8 @@ const MODEL_MAPPING = {
   'opus5.1': 'z-ai/glm-5.1',
   'opus4.7': 'z-ai/glm4.7',
   'deepseek-v4': 'deepseek-ai/deepseek-v4-pro',
-  'nemo': 'nvidia/nemotron-3-ultra-550b-a55b'
+  'nemo': 'nvidia/nemotron-3-ultra-550b-a55b',
+  'kimi-k2.6': 'moonshotai/kimi-k2.6'
 };
 
 // Health check endpoint
