@@ -38,7 +38,8 @@ const MODEL_MAPPING = {
   'nemo': 'nvidia/nemotron-3-ultra-550b-a55b',
   'kimi-k2.6': 'moonshotai/kimi-k2.6',
   'gpt-oss': 'openai/gpt-oss-120b',
-  'diffgem': 'google/diffusiongemma-26b-a4b-it'
+  'diffgem': 'google/diffusiongemma-26b-a4b-it',
+  'minimax-m3': 'minimaxai/minimax-m3'
 };
 
 // Health check endpoint
