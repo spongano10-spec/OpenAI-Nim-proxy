@@ -37,7 +37,8 @@ const MODEL_MAPPING = {
   'deepseek-v4': 'deepseek-ai/deepseek-v4-pro',
   'nemo': 'nvidia/nemotron-3-ultra-550b-a55b',
   'kimi-k2.6': 'moonshotai/kimi-k2.6',
-  'gpt-oss': 'openai/gpt-oss-120b'
+  'gpt-oss': 'openai/gpt-oss-120b',
+  'diffgem': 'google/diffusiongemma-26b-a4b-it'
 };
 
 // Health check endpoint
