@@ -8,7 +8,8 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.json({ limit: '100mb' })); app.use(express.urlencoded({ limit: '100mb', extended: true }));
+app.use(express.json({ limit: '100mb' })); 
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
 // NVIDIA NIM API configuration
 const NIM_API_BASE = process.env.NIM_API_BASE || 'https://integrate.api.nvidia.com/v1';
@@ -34,7 +35,7 @@ const MODEL_MAPPING = {
   'mistral': 'mistralai/mistral-small-4-119b-2603',
   'opus5.1': 'z-ai/glm-5.1',
   'opus4.7': 'z-ai/glm4.7',
-  'deepseek-v4': 'deepseek-ai/deepseek-v4-pro',
+  'deepseek-v4': 'deepseek-ai/deepseek-v4-pro', // This will now trigger the fix
   'nemo': 'nvidia/nemotron-3-ultra-550b-a55b',
   'kimi-k2.6': 'moonshotai/kimi-k2.6',
   'gpt-oss': 'openai/gpt-oss-120b',
@@ -83,6 +84,29 @@ app.post('/v1/chat/completions', async (req, res) => {
       stream: stream || false
     };
     
+    // 🔥 CRITICAL FIX: Inject chat_template_kwargs for DeepSeek V4 models
+    // NVIDIA NIM hangs indefinitely without this parameter for V4-Pro and V4-Flash
+    const isDeepSeekV4 = nimModel.includes('deepseek-v4');
+    
+    if (isDeepSeekV4) {
+      if (ENABLE_THINKING_MODE) {
+        // Enable thinking with high reasoning effort
+        nimRequest.extra_body = {
+          chat_template_kwargs: {
+            thinking: true,
+            reasoning_effort: "high" 
+          }
+        };
+      } else {
+        // Explicitly disable thinking if toggle is off
+        nimRequest.extra_body = {
+          chat_template_kwargs: {
+            thinking: false
+          }
+        };
+      }
+    }
+
     // Make request to NVIDIA NIM API
     const response = await axios.post(`${NIM_API_BASE}/chat/completions`, nimRequest, {
       headers: {
@@ -151,3 +175,5 @@ if (require.main === module) {
     console.log(`Health check: http://localhost:${PORT}/health`);
   });
 }
+
+
