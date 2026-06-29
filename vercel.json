@@ -13,10 +13,3 @@
     }
   ]
 }
-{
-  "functions": {
-    "server.js": {
-      "maxDuration": 120
-    }
-  }
-}
