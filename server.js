@@ -15,7 +15,7 @@ app.post('/v1/chat/completions', async (req, res) => {
       messages: messages,
       temperature: temperature || 0.6,
       max_tokens: max_tokens || 9024,
-      stream: stream || false
+      stream: stream || true
     };
 
     console.log(`[${requestId}] Forwarding request to NVIDIA NIM: ${nimModel} (Stream: ${stream})`);
