@@ -185,3 +185,7 @@ if (require.main === module) {
     console.log(`Health check: http://localhost:${PORT}/health`);
   });
 }
+
+app.get(['/favicon.ico', '/favicon.png'], (req, res) => {
+  res.status(204).end();
+});
