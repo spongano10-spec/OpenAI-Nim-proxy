@@ -15,7 +15,7 @@ const NIM_API_BASE = process.env.NIM_API_BASE || 'https://integrate.api.nvidia.c
 const NIM_API_KEY = process.env.NIM_API_KEY;
 
 // 🔥 REASONING DISPLAY TOGGLE - Shows/hides reasoning in output
-const SHOW_REASONING = true; // Set to true to show reasoning with <think> tags
+const SHOW_REASONING = true; // Set to true to show reasoning with  tags
 
 // 🔥 THINKING MODE TOGGLE - Enables thinking for specific models that support it
 const ENABLE_THINKING_MODE = true; // Set to true to enable chat_template_kwargs thinking parameter
@@ -45,8 +45,8 @@ const MODEL_MAPPING = {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     service: 'OpenAI to NVIDIA NIM Proxy'
   });
 });
@@ -93,12 +93,18 @@ app.post('/v1/chat/completions', async (req, res) => {
     });
 
     if (stream) {
-      // Handle streaming response
+      // Handle streaming response with Vercel optimizations
       res.setHeader('Content-Type', 'text/event-stream');
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
+      res.setHeader('Content-Encoding', 'none'); // Prevents Vercel buffer compression
 
       response.data.pipe(res);
+
+      // Clean up the downstream stream if the user disconnects early
+      req.on('close', () => {
+        response.data.destroy();
+      });
     } else {
       // Transform NIM response to OpenAI format
       const openaiResponse = {
