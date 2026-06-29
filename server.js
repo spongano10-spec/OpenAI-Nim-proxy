@@ -36,7 +36,7 @@ const MODEL_MAPPING = {
   'opus5.1': 'z-ai/glm-5.1',
   'opus4.7': 'z-ai/glm4.7',
   'deepseek-v4': 'deepseek-ai/deepseek-v4-pro',
-  'deepseek-v4f: 'deepseek-ai/deepseek-v4-flash',
+  'deepseek-v4f': 'deepseek-ai/deepseek-v4-flash',
   'nemo': 'nvidia/nemotron-3-ultra-550b-a55b',
   'kimi-k2.6': 'moonshotai/kimi-k2.6',
   'gpt-oss': 'openai/gpt-oss-120b',
