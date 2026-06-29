@@ -1,4 +1,4 @@
-// server.js - OpenAI to NVIDIA NIM API Proxy (FIXED v3)
+// server.js - OpenAI to NVIDIA NIM API Proxy
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
@@ -8,17 +8,19 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.json({ limit: '100mb' })); 
-app.use(express.urlencoded({ limit: '100mb', extended: true }));
+app.use(express.json({ limit: '100mb' })); app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
 // NVIDIA NIM API configuration
 const NIM_API_BASE = process.env.NIM_API_BASE || 'https://integrate.api.nvidia.com/v1';
 const NIM_API_KEY = process.env.NIM_API_KEY;
 
-// 🔥 THINKING MODE TOGGLE
-const ENABLE_THINKING_MODE = true; 
+// 🔥 REASONING DISPLAY TOGGLE - Shows/hides reasoning in output
+const SHOW_REASONING = true; // Set to true to show reasoning with <think> tags
 
-// Model mapping
+// 🔥 THINKING MODE TOGGLE - Enables thinking for specific models that support it
+const ENABLE_THINKING_MODE = true; // Set to true to enable chat_template_kwargs thinking parameter
+
+// Model mapping (adjust based on available NIM models)
 const MODEL_MAPPING = {
   'gpt-3.5-turbo': 'nvidia/llama-3.1-nemotron-ultra-253b-v1',
   'gpt-4': 'qwen/qwen3-coder-480b-a35b-instruct',
@@ -41,12 +43,15 @@ const MODEL_MAPPING = {
   'stepfun-3.7': 'stepfun-ai/step-3.7-flash'
 };
 
-// Health check
+// Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'OpenAI to NVIDIA NIM Proxy' });
+  res.json({ 
+    status: 'ok', 
+    service: 'OpenAI to NVIDIA NIM Proxy'
+  });
 });
 
-// List models
+// List models endpoint (OpenAI compatible)
 app.get('/v1/models', (req, res) => {
   const models = Object.keys(MODEL_MAPPING).map(model => ({
     id: model,
@@ -54,60 +59,48 @@ app.get('/v1/models', (req, res) => {
     created: Date.now(),
     owned_by: 'nvidia-nim-proxy'
   }));
-  res.json({ object: 'list', data: models });
+
+  res.json({
+    object: 'list',
+    data: models
+  });
 });
 
-// Chat completions endpoint
+// Chat completions endpoint (main proxy)
 app.post('/v1/chat/completions', async (req, res) => {
   try {
     const { model, messages, temperature, max_tokens, stream } = req.body;
-    
+
+    // Get NIM model mapping
     let nimModel = MODEL_MAPPING[model] || 'meta/llama-3.1-8b-instruct';
-    
-    // Base request
+
+    // Transform OpenAI request to NIM format
     const nimRequest = {
       model: nimModel,
       messages: messages,
       temperature: temperature || 0.6,
-      top_p: 0.95, // NIM default
       max_tokens: max_tokens || 9024,
       stream: stream || false
     };
-    
-    // 🔥 CRITICAL FIX: Exact NVIDIA NIM Syntax for DeepSeek V4
-    const isDeepSeekV4 = nimModel.includes('deepseek-v4');
-    
-    if (isDeepSeekV4) {
-      // NVIDIA NIM requires ONLY 'thinking' and 'reasoning_effort' inside chat_template_kwargs
-      // 'enable_thinking' causes errors on some NIM endpoints
-      const thinkingParams = {
-        chat_template_kwargs: {
-          thinking: true,
-          reasoning_effort: "high"
-        }
-      };
 
-      // Apply to extra_body (Required by NIM)
-      nimRequest.extra_body = thinkingParams;
-    }
-
-    // 🔥 CRITICAL FIX: Increase Timeout to 120s
-    // DeepSeek V4 "thinking" can take 30-60s before first token
+    // Make request to NVIDIA NIM API
     const response = await axios.post(`${NIM_API_BASE}/chat/completions`, nimRequest, {
       headers: {
         'Authorization': `Bearer ${NIM_API_KEY}`,
         'Content-Type': 'application/json'
       },
-      responseType: stream ? 'stream' : 'json',
-      timeout: 120000 // 120 seconds timeout
+      responseType: stream ? 'stream' : 'json'
     });
-    
+
     if (stream) {
+      // Handle streaming response
       res.setHeader('Content-Type', 'text/event-stream');
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
+
       response.data.pipe(res);
     } else {
+      // Transform NIM response to OpenAI format
       const openaiResponse = {
         id: `chatcmpl-${Date.now()}`,
         object: 'chat.completion',
@@ -120,16 +113,13 @@ app.post('/v1/chat/completions', async (req, res) => {
           total_tokens: 0
         }
       };
+
       res.json(openaiResponse);
     }
-    
+
   } catch (error) {
     console.error('Proxy error:', error.message);
-    
-    if (error.code === 'ECONNABORTED') {
-      console.error('⚠️ TIMEOUT: DeepSeek took too long. Ensure vercel.json maxDuration is set.');
-    }
-    
+
     res.status(error.response?.status || 500).json({
       error: {
         message: error.message || 'Internal server error',
@@ -140,7 +130,7 @@ app.post('/v1/chat/completions', async (req, res) => {
   }
 });
 
-// Catch-all
+// Catch-all for unsupported endpoints
 app.all('*', (req, res) => {
   res.status(404).json({
     error: {
@@ -151,10 +141,13 @@ app.all('*', (req, res) => {
   });
 });
 
+// Export for Vercel
 module.exports = app;
 
+// Local development
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`Proxy running on port ${PORT}`);
+    console.log(`OpenAI to NVIDIA NIM Proxy running on port ${PORT}`);
+    console.log(`Health check: http://localhost:${PORT}/health`);
   });
 }
