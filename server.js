@@ -87,7 +87,7 @@ app.post('/v1/chat/completions', async (req, res) => {
       messages: messages,
       temperature: temperature || 0.6,
       max_tokens: max_tokens || 9024,
-      stream: stream || true
+      stream: stream || false
     };
 
     console.log(`[${requestId}] Forwarding request to NVIDIA NIM: ${nimModel} (Stream: ${stream})`);
@@ -99,7 +99,7 @@ app.post('/v1/chat/completions', async (req, res) => {
         'Content-Type': 'application/json'
       },
       responseType: stream ? 'stream' : 'json',
-      timeout: 90000 // 90 seconds timeout (forces error before Vercel 120s CDN timeout)
+      timeout: 300000 // 300 seconds timeout (forces error before Vercel 120s CDN timeout)
     });
 
     console.log(`[${requestId}] Received response headers from NVIDIA NIM. Status: ${response.status}`);
