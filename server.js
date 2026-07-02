@@ -38,6 +38,7 @@ const MODEL_MAPPING = {
   'deepseek-v4': 'deepseek-ai/deepseek-v4-pro',
   'deepseek-v4f': 'deepseek-ai/deepseek-v4-flash',
   'nemo': 'nvidia/nemotron-3-ultra-550b-a55b',
+  'nemo4b': 'nvidia/nemotron-mini-4b-instruct',
   'kimi-k2.6': 'moonshotai/kimi-k2.6',
   'gpt-oss': 'openai/gpt-oss-120b',
   'diffgem': 'google/diffusiongemma-26b-a4b-it',
