@@ -45,7 +45,8 @@ const MODEL_MAPPING = {
   'minimax-m3': 'minimaxai/minimax-m3',
   'stepfun-3.7': 'stepfun-ai/step-3.7-flash',
   'seed': 'bytedance/seed-oss-36b-instruct',
-  'inkling': 'thinkingmachines/inkling'
+  'inkling': 'thinkingmachines/inkling',
+  'laguna': 'poolside/laguna-xs-2.1'
 };
 
 // Health check endpoint
