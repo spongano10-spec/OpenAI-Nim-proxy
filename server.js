@@ -33,7 +33,7 @@ const MODEL_MAPPING = {
   'gemma': 'google/gemma-4-31b-it',
   'gemma7': 'google/gemma-7b',
   'mistral': 'mistralai/mistral-small-4-119b-2603',
-  'opus5.1': 'z-ai/glm-5.2',
+  'opus5.1': 'z-ai/glm-5.3',
   'opus4.7': 'z-ai/glm4.7',
   'deepseek-v4': 'deepseek-ai/deepseek-v4-pro-0813',
   'deepseek-v4f': 'deepseek-ai/deepseek-v4-flash-0813',
