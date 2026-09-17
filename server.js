@@ -46,7 +46,8 @@ const MODEL_MAPPING = {
   'stepfun-3.7': 'stepfun-ai/step-3.7-flash',
   'seed': 'bytedance/seed-oss-36b-instruct',
   'inkling': 'thinkingmachines/inkling',
-  'laguna': 'poolside/laguna-xs-2.1'
+  'laguna': 'poolside/laguna-xs-2.1',
+  'glmflash': 'z-ai/glm-5.3-flash'
 };
 
 // Health check endpoint
