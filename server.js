@@ -43,6 +43,7 @@ const MODEL_MAPPING = {
   'gpt-oss': 'openai/gpt-oss-20b',
   'diffgem': 'google/diffusiongemma-26b-a4b-it',
   'minimax-m3': 'minimaxai/minimax-m3',
+  'minimax-m3f': 'minimaxai/minimax-m3.1-flash',
   'stepfun-3.7': 'stepfun-ai/step-3.7-flash',
   'stepfun-5': 'stepfun-ai/step-5-preview',
   'seed': 'bytedance/seed-oss-36b-instruct',
